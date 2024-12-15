@@ -2,7 +2,7 @@ DeltaExtensions.UseResponseDiagnostics  = true;
 
 var connectionString = PostgresConnection.ConnectionString;
 
-#region UseDelta
+#region UseDeltaPostgres
 
 var builder = WebApplication.CreateBuilder();
 builder.Services.AddScoped(_ => new NpgsqlConnection(connectionString));
@@ -62,12 +62,8 @@ app.MapGet(
         await _.Response.WriteAsync(builder.ToString());
     });
 
-#region UseDeltaMapGroup
-
 app.MapGroup("/group")
     .UseDelta()
     .MapGet("/", () => "Hello Group!");
-
-#endregion
 
 app.Run();

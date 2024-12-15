@@ -85,7 +85,7 @@ if (@changeTracking is null)
 else
   select cast(@timeStamp as varchar) + '-' + cast(@changeTracking as varchar)
 ```
-<sup><a href='/src/Delta/DeltaExtensions_Sql.cs#L43-L51' title='Snippet source file'>snippet source</a> | <a href='#snippet-SqlServerTimestamp' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Delta/DeltaExtensions_Sql.cs#L46-L54' title='Snippet source file'>snippet source</a> | <a href='#snippet-SqlServerTimestamp' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -220,23 +220,32 @@ create index IF NOT EXISTS ""IX_Employees_CompanyId""
 
 ### Add to WebApplicationBuilder
 
-<!-- snippet: UseDelta -->
-<a id='snippet-UseDelta'></a>
-```cs
-var builder = WebApplication.CreateBuilder();
-builder.Services.AddScoped(_ => new NpgsqlConnection(connectionString));
-var app = builder.Build();
-app.UseDelta();
-```
-<sup><a href='/src/WebApplicationPostgres/Program.cs#L5-L12' title='Snippet source file'>snippet source</a> | <a href='#snippet-UseDelta' title='Start of snippet'>anchor</a></sup>
-<a id='snippet-UseDelta-1'></a>
+
+#### SQL Server
+
+<!-- snippet: UseDeltaSqlServer -->
+<a id='snippet-UseDeltaSqlServer'></a>
 ```cs
 var builder = WebApplication.CreateBuilder();
 builder.Services.AddScoped(_ => new SqlConnection(connectionString));
 var app = builder.Build();
 app.UseDelta();
 ```
-<sup><a href='/src/WebApplicationSqlServer/Program.cs#L10-L17' title='Snippet source file'>snippet source</a> | <a href='#snippet-UseDelta-1' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/WebApplicationSqlServer/Program.cs#L10-L17' title='Snippet source file'>snippet source</a> | <a href='#snippet-UseDeltaSqlServer' title='Start of snippet'>anchor</a></sup>
+<!-- endSnippet -->
+
+
+#### PostgreSQL
+
+<!-- snippet: UseDeltaPostgres -->
+<a id='snippet-UseDeltaPostgres'></a>
+```cs
+var builder = WebApplication.CreateBuilder();
+builder.Services.AddScoped(_ => new NpgsqlConnection(connectionString));
+var app = builder.Build();
+app.UseDelta();
+```
+<sup><a href='/src/WebApplicationPostgres/Program.cs#L5-L12' title='Snippet source file'>snippet source</a> | <a href='#snippet-UseDeltaPostgres' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -251,14 +260,7 @@ app.MapGroup("/group")
     .UseDelta()
     .MapGet("/", () => "Hello Group!");
 ```
-<sup><a href='/src/WebApplicationPostgres/Program.cs#L65-L71' title='Snippet source file'>snippet source</a> | <a href='#snippet-UseDeltaMapGroup' title='Start of snippet'>anchor</a></sup>
-<a id='snippet-UseDeltaMapGroup-1'></a>
-```cs
-app.MapGroup("/group")
-    .UseDelta()
-    .MapGet("/", () => "Hello Group!");
-```
-<sup><a href='/src/WebApplicationSqlServer/Program.cs#L63-L69' title='Snippet source file'>snippet source</a> | <a href='#snippet-UseDeltaMapGroup-1' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/WebApplicationSqlServer/Program.cs#L63-L69' title='Snippet source file'>snippet source</a> | <a href='#snippet-UseDeltaMapGroup' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -304,7 +306,7 @@ static (Type sqlConnection, Type transaction) FindConnectionType()
         return (npgsqlConnection, transaction);
     }
 
-    throw new("Could not find connection type. Tried Microsoft.Data.SqlClient.SqlConnection");
+    throw new("Could not find connection type. Tried Microsoft.Data.SqlClient.SqlConnection and Npgsql.NpgsqlTransaction");
 }
 
 static Connection DiscoverConnection(HttpContext httpContext)
@@ -574,7 +576,7 @@ from sys.databases as d inner join
   sys.change_tracking_databases as t on
   t.database_id = d.database_id
 ```
-<sup><a href='/src/Delta.SqlServer/DeltaExtensions_Sql.cs#L140-L145' title='Snippet source file'>snippet source</a> | <a href='#snippet-GetTrackedDatabasesSql' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Delta.SqlServer/DeltaExtensions_Sql.cs#L139-L144' title='Snippet source file'>snippet source</a> | <a href='#snippet-GetTrackedDatabasesSql' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -603,7 +605,7 @@ select t.Name
 from sys.tables as t inner join
   sys.change_tracking_tables as c on t.[object_id] = c.[object_id]
 ```
-<sup><a href='/src/Delta.SqlServer/DeltaExtensions_Sql.cs#L76-L81' title='Snippet source file'>snippet source</a> | <a href='#snippet-GetTrackedTablesSql' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Delta.SqlServer/DeltaExtensions_Sql.cs#L76-L80' title='Snippet source file'>snippet source</a> | <a href='#snippet-GetTrackedTablesSql' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -630,7 +632,7 @@ from sys.databases as d inner join
   t.database_id = d.database_id
 where d.name = '{database}'
 ```
-<sup><a href='/src/Delta.SqlServer/DeltaExtensions_Sql.cs#L97-L103' title='Snippet source file'>snippet source</a> | <a href='#snippet-IsTrackingEnabledSql' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Delta.SqlServer/DeltaExtensions_Sql.cs#L96-L102' title='Snippet source file'>snippet source</a> | <a href='#snippet-IsTrackingEnabledSql' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -684,7 +686,7 @@ Uses the following SQL:
 ```cs
 alter database [{database}] set change_tracking = off;
 ```
-<sup><a href='/src/Delta.SqlServer/DeltaExtensions_Sql.cs#L126-L128' title='Snippet source file'>snippet source</a> | <a href='#snippet-DisableTrackingSqlDB' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Delta.SqlServer/DeltaExtensions_Sql.cs#L125-L127' title='Snippet source file'>snippet source</a> | <a href='#snippet-DisableTrackingSqlDB' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
@@ -695,7 +697,7 @@ alter database [{database}] set change_tracking = off;
 ```cs
 alter table [{table}] disable change_tracking;
 ```
-<sup><a href='/src/Delta.SqlServer/DeltaExtensions_Sql.cs#L118-L120' title='Snippet source file'>snippet source</a> | <a href='#snippet-DisableTrackingSqlTable' title='Start of snippet'>anchor</a></sup>
+<sup><a href='/src/Delta.SqlServer/DeltaExtensions_Sql.cs#L117-L119' title='Snippet source file'>snippet source</a> | <a href='#snippet-DisableTrackingSqlTable' title='Start of snippet'>anchor</a></sup>
 <!-- endSnippet -->
 
 
